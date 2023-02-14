@@ -12,15 +12,14 @@ contract INEC is IINEC {
         string memory _name,
         string[] memory _contenders,
         uint256 _period,
-        uint8 _tokenPerVote,
-        address _PVC
+        uint8 _tokenPerVote
     ) external {
         Ballot newBallotBox = new Ballot(
             _name,
             _contenders,
             _period,
             _tokenPerVote,
-            _PVC
+            0xDFB1bd4120dF6628bd063CB532724a87A9b4471F
         );
         emit child(newBallotBox);
         ballotFactory.push(newBallotBox);

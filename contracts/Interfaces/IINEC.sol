@@ -13,7 +13,6 @@ interface IINEC {
         string memory _name, 
         string[] memory _contenders, 
         uint256 _period, 
-        uint8 _tokenPerVote,
-        address _PVC
+        uint8 _tokenPerVote
         ) external;
 }

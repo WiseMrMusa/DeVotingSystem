@@ -34,19 +34,13 @@ async function main() {
 
     const INECFactory = await ethers.getContractAt("IINEC",INECAddress);
 
-    // function createBallot(
-    //     string memory _name, 
-    //     string[] memory _contenders, 
-    //     uint256 _period, 
-    //     uint8 _tokenPerVote
-    //     ) external;
 
     // Create a Ballot Box
     let createNewBallot = await INECFactory.createBallot(
         "General Election",
         ["APC", "PDP", "LP"],
         86_400,
-        6,
+        8,
         PVCTokenAddress
     )
     console.log(await createNewBallot.wait().then(e => e.events? e.events[0].args? e.events[0].args[0]:null:null));
@@ -55,13 +49,13 @@ async function main() {
 
     const BallotBox1 = await ethers.getContractAt("IBallot",newBallot1Address);
     console.log(await BallotBox1.name());
-    // console.log(await BallotBox1.vote(["APC", "PDP", "LP"]));
-    
     console.log(await deployedPVCToken.balanceOf(owner.address));
     console.log(await deployedPVCToken.buyToken({value: 1000}));
     console.log(await deployedPVCToken.approve(BallotBox1.address,100));
     console.log(await deployedPVCToken.balanceOf(owner.address));
     console.log(await BallotBox1.vote(["APC", "PDP", "LP"]));
+    // console.log(await BallotBox1.vote(["APC", "PDP", "LP"]));
+    // console.log(await BallotBox1.vote(["APC", "PDP", "LP"]));
     console.log(await deployedPVCToken.balanceOf(owner.address));
     console.log(await BallotBox1.winner());
 

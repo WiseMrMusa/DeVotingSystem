@@ -1,6 +1,13 @@
 # Voting Platform
 
+
+https://goerli.etherscan.io/address/0xDFB1bd4120dF6628bd063CB532724a87A9b4471F#code
+
+https://goerli.etherscan.io/address/0x9530E44031Bc09e2dafcc3b88Edd31A556C4398a#code
+
+
 This is a token voting platform that allows holders of the token to vote and 3 contenders can be voted for
+
 
 ## Reward System
 1 person - 3 points

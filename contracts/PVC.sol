@@ -19,6 +19,7 @@ contract PVC is IPVC {
         symbol = _symbol;
         decimal = _decimal; 
         totalSupply_ = _totalSupply;
+        owner_ = msg.sender;
     }
 
     string public name;
@@ -27,6 +28,7 @@ contract PVC is IPVC {
     uint256 private totalSupply_;
     mapping (address => uint256) private balanceOf_;
     mapping(address => mapping(address => uint256)) private allowance_;
+    address private owner_;
     
     /// @notice This function returns the total supply of the token 
     function totalSupply() external view returns (uint256){
@@ -84,6 +86,16 @@ contract PVC is IPVC {
   function burnTokenFor(address _owner,uint256 _amount) external{
     balanceOf_[_owner] -= _amount;
     totalSupply_ -= _amount;
+  }
+
+  function withdraw(uint256 _amount) external onlyOwner() returns (bool success){
+    (success,) = payable(owner_).call{value: _amount}("");
+    
+  }
+
+  modifier onlyOwner() {
+    require(msg.sender == owner_, "You are not Authorized");
+    _;
   }
 
 }
