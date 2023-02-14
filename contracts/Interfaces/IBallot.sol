@@ -11,7 +11,7 @@ interface IBallot {
         uint8 voteWeight;
     }
     function vote(string[] calldata _voteRank) external;
-    function winner() external view;
+    function winner() external view returns (string memory);
     function votersAddress() external view returns (address[] memory);
     function name() external view returns (string memory);
 }

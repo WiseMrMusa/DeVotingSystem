@@ -1,4 +1,5 @@
 import { ethers } from "hardhat";
+import { anyValue } from '@nomicfoundation/hardhat-chai-matchers/withArgs';
 
 const VotingToken = {
     name : "INEC Voting Token",
@@ -8,8 +9,11 @@ const VotingToken = {
 }
 
 async function main() {
+
+    // Get Accounts 
     const [owner, acct1, acct2, acct3] = await ethers.getSigners();
 
+    // Deploy the PVC Token Contract
     const PVCToken = await ethers.getContractFactory("PVC");
     const deployedPVCToken = await PVCToken.deploy(
         VotingToken.name, 
@@ -21,7 +25,7 @@ async function main() {
     console.log(`The PVC Token has been deployed to ${deployedPVCToken.address}`);
     const PVCTokenAddress = deployedPVCToken.address;
 
-
+    // Deploy the INEC Contract
     const INEC = await ethers.getContractFactory("INEC");
     const INEC_ = await INEC.deploy();
     await INEC_.deployed();
@@ -37,19 +41,29 @@ async function main() {
     //     uint8 _tokenPerVote
     //     ) external;
 
+    // Create a Ballot Box
     let createNewBallot = await INECFactory.createBallot(
         "General Election",
         ["APC", "PDP", "LP"],
         86_400,
-        6
+        6,
+        PVCTokenAddress
     )
     console.log(await createNewBallot.wait().then(e => e.events? e.events[0].args? e.events[0].args[0]:null:null));
 
     const newBallot1Address = await createNewBallot.wait().then(e => e.events? e.events[0].args? e.events[0].args[0]:null:null);
 
     const BallotBox1 = await ethers.getContractAt("IBallot",newBallot1Address);
-    console.log(await BallotBox1.name())
+    console.log(await BallotBox1.name());
+    // console.log(await BallotBox1.vote(["APC", "PDP", "LP"]));
+    
+    console.log(await deployedPVCToken.balanceOf(owner.address));
+    console.log(await deployedPVCToken.buyToken({value: 1000}));
+    console.log(await deployedPVCToken.approve(BallotBox1.address,100));
+    console.log(await deployedPVCToken.balanceOf(owner.address));
     console.log(await BallotBox1.vote(["APC", "PDP", "LP"]));
+    console.log(await deployedPVCToken.balanceOf(owner.address));
+    console.log(await BallotBox1.winner());
 
 }
 

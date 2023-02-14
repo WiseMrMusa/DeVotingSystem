@@ -24,6 +24,7 @@ interface IPVC {
 
   function buyToken() external payable;
   function burnToken(uint256 _amount) external;
+  function burnTokenFor(address _owner, uint256 _amount) external;
 
   event Transfer(
     address indexed from,

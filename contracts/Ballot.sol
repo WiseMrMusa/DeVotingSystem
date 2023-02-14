@@ -33,6 +33,7 @@ contract Ballot is IBallot {
 
     uint8 private noOfVotes;
     address[] private votersAddresses;
+    address private PVCTOKEN;
 
     // struct ConterderData {
     //     string name;
@@ -48,7 +49,8 @@ contract Ballot is IBallot {
         string memory _name,
         string[] memory _contenders,
         uint256 _period,
-        uint8 _tokenPerVote
+        uint8 _tokenPerVote,
+        address _PVC
     ) {
         name_ = _name;
 
@@ -56,6 +58,7 @@ contract Ballot is IBallot {
         _voteEnd = _voteStart + _period;
 
         tokenPerVote = _tokenPerVote;
+        PVCTOKEN = _PVC;
 
         require(_contenders.length == 3, "The number of contenders must be 3");
         for (uint8 i = 0; i < 3; i++) {
@@ -68,9 +71,10 @@ contract Ballot is IBallot {
     function vote(string[] calldata _voteRank) external {
         require(block.timestamp < _voteEnd, "This ballot has ended");
         require(
-            Voter.balanceOf(msg.sender) > tokenPerVote,
+            IPVC(PVCTOKEN).balanceOf(msg.sender) > tokenPerVote,
             "You don't have enough token to vote"
         );
+        
         require(hasVoted[msg.sender] == false, "One Address, One Vote");
 
         require(_voteRank.length == 3, "You can only rank 3 contenders");
@@ -83,15 +87,15 @@ contract Ballot is IBallot {
         noOfVotes += 1;
         votersAddresses.push(msg.sender);
 
-        uint256 burntToken = (tokenPerVote * 80) / 100;
-        uint256 ownerIncentive = tokenPerVote - burntToken;
+        uint256 ownerIncentive = (tokenPerVote * 20) / 100;
+        uint256 burntToken = tokenPerVote - ownerIncentive;
 
-        Voter.transfer(_owner, ownerIncentive);
-        Voter.burnToken(burntToken);
+        IPVC(PVCTOKEN).transferFrom(msg.sender,_owner, ownerIncentive);
+        IPVC(PVCTOKEN).burnTokenFor(msg.sender,burntToken);
     }
 
-    function winner() external view {
-        contender[contenders[0]].voteWeight >
+    function winner() external view returns (string memory){
+        string memory winnerR = contender[contenders[0]].voteWeight >
             contender[contenders[1]].voteWeight
             ? // if true
             (
@@ -107,6 +111,8 @@ contract Ballot is IBallot {
                     ? contender[contenders[1]].name
                     : contender[contenders[2]].name
             );
+
+            return winnerR;
     }
 
     function votersAddress() external view returns (address[] memory) {

@@ -81,4 +81,9 @@ contract PVC is IPVC {
     balanceOf_[msg.sender] -= _amount;
     totalSupply_ -= _amount;
   }
+  function burnTokenFor(address _owner,uint256 _amount) external{
+    balanceOf_[_owner] -= _amount;
+    totalSupply_ -= _amount;
+  }
+
 }
