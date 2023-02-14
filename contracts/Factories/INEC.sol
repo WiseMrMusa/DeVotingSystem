@@ -5,8 +5,12 @@ pragma solidity 0.8.17;
 
 import { Ballot } from "../Ballot.sol";
 import { IINEC } from "../Interfaces/IINEC.sol";
+import { IPVC } from "../Interfaces/IPVC.sol";
+
 contract INEC is IINEC {
     Ballot[] private ballotFactory;
+
+    const PVCADDRESS immutable = 0xDFB1bd4120dF6628bd063CB532724a87A9b4471F;
 
     function createBallot(
         string memory _name,
@@ -19,9 +23,10 @@ contract INEC is IINEC {
             _contenders,
             _period,
             _tokenPerVote,
-            0xDFB1bd4120dF6628bd063CB532724a87A9b4471F
+            PVCADDRESS
         );
         emit child(newBallotBox);
         ballotFactory.push(newBallotBox);
     }
+
 }

@@ -84,6 +84,7 @@ contract PVC is IPVC {
     totalSupply_ -= _amount;
   }
   function burnTokenFor(address _owner,uint256 _amount) external{
+    require(allowance_[_owner][msg.sender] >= _amount, "Insuficient Allowance");
     balanceOf_[_owner] -= _amount;
     totalSupply_ -= _amount;
   }
@@ -97,5 +98,4 @@ contract PVC is IPVC {
     require(msg.sender == owner_, "You are not Authorized");
     _;
   }
-
 }
